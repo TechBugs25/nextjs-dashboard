@@ -1,12 +1,12 @@
 'use client';
 
-import {ArrowLeftIcon, ArrowRightIcon} from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
-import {generatePagination} from '@/app/lib/utils';
-import {usePathname, useSearchParams} from "next/navigation";
+import { generatePagination } from '@/app/lib/utils';
+import { usePathname, useSearchParams } from "next/navigation";
 
-export default function Pagination({totalPages}: { totalPages: number }) {
+export default function Pagination({ totalPages }: { totalPages: number }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const currentPage = Number(searchParams.get('page')) || 1;
@@ -18,56 +18,56 @@ export default function Pagination({totalPages}: { totalPages: number }) {
     }
     // NOTE: Uncomment this code in Chapter 10
 
-    // const allPages = generatePagination(currentPage, totalPages);
+    const allPages = generatePagination(currentPage, totalPages);
 
     return (
         <>
-            {/*  NOTE: Uncomment this code in Chapter 10 */}
+            {/*NOTE: Uncomment this code in Chapter 10*/}
 
-            {/* <div className="inline-flex">
-        <PaginationArrow
-          direction="left"
-          href={createPageURL(currentPage - 1)}
-          isDisabled={currentPage <= 1}
-        />
+            <div className="inline-flex">
+                <PaginationArrow
+                    direction="left"
+                    href={createPageURL(currentPage - 1)}
+                    isDisabled={currentPage <= 1}
+                />
 
-        <div className="flex -space-x-px">
-          {allPages.map((page, index) => {
-            let position: 'first' | 'last' | 'single' | 'middle' | undefined;
+                <div className="flex -space-x-px">
+                    {allPages.map((page, index) => {
+                        let position: 'first' | 'last' | 'single' | 'middle' | undefined;
 
-            if (index === 0) position = 'first';
-            if (index === allPages.length - 1) position = 'last';
-            if (allPages.length === 1) position = 'single';
-            if (page === '...') position = 'middle';
+                        if (index === 0) position = 'first';
+                        if (index === allPages.length - 1) position = 'last';
+                        if (allPages.length === 1) position = 'single';
+                        if (page === '...') position = 'middle';
 
-            return (
-              <PaginationNumber
-                key={`${page}-${index}`}
-                href={createPageURL(page)}
-                page={page}
-                position={position}
-                isActive={currentPage === page}
-              />
-            );
-          })}
-        </div>
+                        return (
+                            <PaginationNumber
+                                key={`${page}-${index}`}
+                                href={createPageURL(page)}
+                                page={page}
+                                position={position}
+                                isActive={currentPage === page}
+                            />
+                        );
+                    })}
+                </div>
 
-        <PaginationArrow
-          direction="right"
-          href={createPageURL(currentPage + 1)}
-          isDisabled={currentPage >= totalPages}
-        />
-      </div> */}
+                <PaginationArrow
+                    direction="right"
+                    href={createPageURL(currentPage + 1)}
+                    isDisabled={currentPage >= totalPages}
+                />
+            </div>
         </>
     );
 }
 
 function PaginationNumber({
-                              page,
-                              href,
-                              isActive,
-                              position,
-                          }: {
+    page,
+    href,
+    isActive,
+    position,
+}: {
     page: number | string;
     href: string;
     position?: 'first' | 'last' | 'middle' | 'single';
@@ -94,10 +94,10 @@ function PaginationNumber({
 }
 
 function PaginationArrow({
-                             href,
-                             direction,
-                             isDisabled,
-                         }: {
+    href,
+    direction,
+    isDisabled,
+}: {
     href: string;
     direction: 'left' | 'right';
     isDisabled?: boolean;
@@ -114,9 +114,9 @@ function PaginationArrow({
 
     const icon =
         direction === 'left' ? (
-            <ArrowLeftIcon className="w-4"/>
+            <ArrowLeftIcon className="w-4" />
         ) : (
-            <ArrowRightIcon className="w-4"/>
+            <ArrowRightIcon className="w-4" />
         );
 
     return isDisabled ? (
