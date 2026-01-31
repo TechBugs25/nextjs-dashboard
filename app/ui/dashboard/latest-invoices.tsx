@@ -1,8 +1,8 @@
-import {ArrowPathIcon} from '@heroicons/react/24/outline';
+import { ArrowPathIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
-import {lusitana} from '@/app/ui/fonts';
-import {fetchLatestInvoices} from "@/app/lib/data";
+import { lusitana } from '@/app/ui/fonts';
+import { fetchLatestInvoices } from "@/app/lib/data";
 
 export default async function LatestInvoices() {
     const latestInvoices = await fetchLatestInvoices();
@@ -27,13 +27,17 @@ export default async function LatestInvoices() {
                                 )}
                             >
                                 <div className="flex items-center">
-                                    <Image
-                                        src={invoice.image_url}
-                                        alt={`${invoice.name}'s profile picture`}
-                                        className="mr-4 rounded-full"
-                                        width={32}
-                                        height={32}
-                                    />
+                                    {invoice.image_url ? (
+                                        <Image
+                                            src={invoice.image_url}
+                                            alt={`${invoice.name}'s profile picture`}
+                                            className="mr-4 rounded-full"
+                                            width={32}
+                                            height={32}
+                                        />
+                                    ) : (
+                                        <UserCircleIcon className="mr-4 h-8 w-8 text-gray-400" />
+                                    )}
                                     <div className="min-w-0">
                                         <p className="truncate text-sm font-semibold md:text-base">
                                             {invoice.name}
@@ -53,7 +57,7 @@ export default async function LatestInvoices() {
                     })}
                 </div>
                 <div className="flex items-center pb-2 pt-6">
-                    <ArrowPathIcon className="h-5 w-5 text-gray-500"/>
+                    <ArrowPathIcon className="h-5 w-5 text-gray-500" />
                     <h3 className="ml-2 text-sm text-gray-500 ">Updated just now</h3>
                 </div>
             </div>

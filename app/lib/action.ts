@@ -149,3 +149,110 @@ export async function authenticate(
         throw error;
     }
 }
+
+// Customer Actions
+export type CustomerState = {
+    errors?: {
+        name?: string[];
+        email?: string[];
+        image_url?: string[];
+    };
+    message?: string | null;
+};
+
+const CustomerBaseSchema = z.object({
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().email('Invalid email address'),
+    image_url: z.string().url('Invalid image URL').optional().or(z.literal('')),
+});
+
+function revalidateCustomers() {
+    revalidatePath('/dashboard/customers');
+}
+
+function redirectToCustomers() {
+    redirect('/dashboard/customers');
+}
+
+export async function createCustomer(prevState: CustomerState | undefined, formData: FormData): Promise<CustomerState> {
+    const parsed = CustomerBaseSchema.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        image_url: formData.get('image_url'),
+    });
+
+    if (!parsed.success) {
+        return {
+            errors: parsed.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create Customer.',
+        };
+    }
+
+    try {
+        const {name, email, image_url} = parsed.data;
+        const finalImageUrl = image_url || '';
+
+        await sql`
+            INSERT INTO customers (id, name, email, image_url)
+            VALUES (${crypto.randomUUID()}, ${name}, ${email}, ${finalImageUrl})
+        `;
+    } catch (error) {
+        console.error(error);
+        return {
+            message: 'Database Error: Failed to Create Customer.',
+        };
+    }
+
+    revalidateCustomers();
+    redirectToCustomers();
+    return {message: null, errors: {}};
+}
+
+export async function updateCustomer(id: string, prevState: CustomerState | undefined, formData: FormData): Promise<CustomerState> {
+    const parsed = CustomerBaseSchema.safeParse({
+        name: formData.get('name'),
+        email: formData.get('email'),
+        image_url: formData.get('image_url'),
+    });
+
+    if (!parsed.success) {
+        return {
+            errors: parsed.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Update Customer.',
+        };
+    }
+
+    try {
+        const {name, email, image_url} = parsed.data;
+        const finalImageUrl = image_url || '/customers/default.png';
+
+        await sql`
+            UPDATE customers
+            SET name      = ${name},
+                email     = ${email},
+                image_url = ${finalImageUrl}
+            WHERE id = ${id}
+        `;
+    } catch (error) {
+        console.error(error);
+        return {message: 'Database Error: Failed to Update Customer.'};
+    }
+
+    revalidateCustomers();
+    redirectToCustomers();
+    return {message: null, errors: {}};
+}
+
+export async function deleteCustomer(id: string) {
+    try {
+        await sql`
+            DELETE
+            FROM customers
+            WHERE id = ${id}
+        `;
+    } catch (error) {
+        console.error('Delete customer failed:', error);
+        throw new Error('Failed to delete customer');
+    }
+    revalidateCustomers();
+}
