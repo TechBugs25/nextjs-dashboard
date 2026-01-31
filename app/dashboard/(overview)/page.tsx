@@ -8,6 +8,7 @@ import {CardSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton} from '@/app/
 export default async function Page() {
     return (
         <main>
+            <title>Dashboard</title>
             <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
                 Dashboard
             </h1>
